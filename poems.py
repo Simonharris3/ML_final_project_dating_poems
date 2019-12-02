@@ -3,15 +3,15 @@ import csv
 import re
 
 
-def read_from_csv(file):
-    reader = csv.reader(file, delimiter=",")
-    labels = []
-    poems = []
-    for row in reader:
-        poems.append(row[0])
-        labels.append(row[1])
-
-    return poems, labels
+# def read_from_csv(file):
+#     reader = csv.reader(file, delimiter=",")
+#     labels = []
+#     poems = []
+#     for row in reader:
+#         poems.append(row[0])
+#         labels.append(row[1])
+#
+#     return poems, labels
 
 
 def get_poem_label_pairs(poems):
@@ -54,9 +54,9 @@ def word_diversity(poem):
             unique_words.append(word)
     return len(unique_words) / len(poem)
 
-
+#returns the counts of each part of speech in the poems, as determined by the nltk pos tagger
 def pos_counts(poems):
-    pos_counts = []
+    part_of_speech_counts = []
     for poem in poems:
         tagged_poem = nltk.pos_tag(poem)
         pos_count = \
@@ -65,7 +65,10 @@ def pos_counts(poems):
         for word in tagged_poem:
             pos_count[word[1]] += 1
 
-        pos_counts.append(pos_count)
+        for pos in pos_count:
+            pos_count[pos] /= len(poem)
+
+        part_of_speech_counts.append(pos_count)
 
     return pos_counts
 
