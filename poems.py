@@ -4,6 +4,7 @@ import re
 # Poem data will be a long list of words for each poem
 
 # Returns a list of all poems in the format of a list of stanzas
+# Pass in the list of poems
 def split_stanzas(poems):
     poem_stanzas = []
     for poem in poems:
@@ -19,8 +20,6 @@ def word_diversity(poem):
             unique_words.append(word)
 
     return len(unique_words)/len(poem)
-
-
 
 def get_length()
 
