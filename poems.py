@@ -13,6 +13,16 @@ def read_from_csv(file):
 
     return poems, labels
 
+
+def get_poem_label_pairs(poems):
+    poem_list = poems.split("\n")
+    poems_labels_list = []
+    for poem in poem_list:
+        poem_label = poem.split(",")
+        poems_labels_list.append(poem_label)
+    print(poems_labels_list)
+    return poems_labels_list
+
 # Returns a list of all poems in the format of a list of stanzas
 # Pass in the list of poems
 def split_stanzas(poems):
@@ -65,6 +75,10 @@ def pos_counts(poems):
 
 
 def main():
-    pass
+    file = open("short_poems.csv", 'r')
+    if file.mode == 'r':
+        contents = file.read()
+    poems_labels = get_poem_label_pairs(contents)
+
 
 main()
