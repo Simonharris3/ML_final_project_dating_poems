@@ -2,7 +2,6 @@ import nltk
 import csv
 import re
 
-
 # def read_from_csv(file):
 #     reader = csv.reader(file, delimiter=",")
 #     labels = []
@@ -20,7 +19,7 @@ def get_poem_label_pairs(poems):
     for poem in poem_list:
         poem_label = poem.split(",")
         poems_labels_list.append(poem_label)
-    #print(poems_labels_list)
+    # print(poems_labels_list)
     return poems_labels_list
 
 
@@ -46,15 +45,19 @@ def avg_stanza_len(poem_stanzas):
 
 
 # Returns ratio of unique words to total words in poem
-def word_diversity(poem):
+def get_word_diversity(poems):
     # Make a running list of each unique word
-    unique_words = []
-    for word in poem:
-        if word not in unique_words:
-            unique_words.append(word)
-    return len(unique_words) / len(poem)
+    word_diversities = []
+    for poem in poems:
+        unique_words = []
+        for word in poem:
+            if word not in unique_words:
+                unique_words.append(word)
+        word_diversities.append(len(unique_words) / len(poem))
+    return word_diversities
 
-#returns the counts of each part of speech in the poems, as determined by the nltk pos tagger
+
+# returns the counts of each part of speech in the poems, as determined by the nltk pos tagger
 def pos_counts(poems):
     part_of_speech_counts = []
     for poem in poems:
@@ -71,6 +74,32 @@ def pos_counts(poems):
         part_of_speech_counts.append(pos_count)
 
     return pos_counts
+
+
+def get_num_stanzas(poem_stanzas):
+    num_stanzas = []
+    for poem in poem_stanzas:
+        num_stanzas.append(len(poem))
+    return num_stanzas
+
+
+def get_poem_lens(poems):
+    poem_lens = []
+    for poem in poems:
+        poem_lens.append(len(poem))
+    return poem_lens
+
+
+def get_avg_word_lens(poems):
+    poem_words = []
+    avg_word_lens = []
+    for poem in poems:
+        poem_words = re.split("\s",poem)
+        total_letters = 0
+        for word in poem_words:
+            total_letters += len(word)
+        avg_word_lens.append(total_letters/len(poem_words))
+    return avg_word_lens
 
 
 def main():
@@ -91,6 +120,14 @@ def main():
     #     print("\nNEW POEM:")
 
     avg_stnz_lens = avg_stanza_len(poem_stanzas)
-    print(avg_stnz_lens)
+    print("Avg Stanza Len: " + str(avg_stnz_lens))
+    num_stanzas = get_num_stanzas(poem_stanzas)
+    print("Num Stanzas: " + str(num_stanzas))
+    unique_word_ratios = get_word_diversity(poem_texts)
+    print("Word Diversity: " + str(unique_word_ratios))
+    print("Poem word counts: " + str(get_poem_lens(poem_texts)))
+    print("Average word lengths: " + str(get_avg_word_lens(poem_texts)))
+    #print("Pos counts: " + str(pos_counts(poem_texts)))
+
 
 main()
