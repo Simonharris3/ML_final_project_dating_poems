@@ -1,26 +1,15 @@
-from keras.wrappers.scikit_learn import KerasClassifier
-import re
+import nltk
+import csv
 
-# Poem data will be a long list of words for each poem
+def read_from_csv(file):
+    reader = csv.reader(file, delimiter=",")
 
-# Returns a list of all poems in the format of a list of stanzas
-def split_stanzas(poems):
-    poem_stanzas = []
-    for poem in poems:
-        poem_stanzas.append(re.split('\S   \S', poem))
-    return poem_stanzas
+    labels = []
+    poems = []
+    for row in reader:
+        poems.append(row[0])
+        labels.append(row[1])
 
-# Returns ratio of unique words to total words in poem
-def word_diversity(poem):
-    # Make a running list of each unique word
-    unique_words = []
-    for word in poem:
-        if word not in unique_words:
-            unique_words.append(word)
+    return poems, labels
 
-    return len(unique_words)/len(poem)
-
-
-
-def get_length()
-
+def pos_counts(poems):
