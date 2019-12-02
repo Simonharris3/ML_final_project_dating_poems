@@ -1,8 +1,6 @@
-from keras.wrappers.scikit_learn import KerasClassifier
-import re
 
-# Poem data will be a long list of words for each poem
 
+<<<<<<< HEAD
 # Returns a list of all poems in the format of a list of stanzas
 # Pass in the list of poems
 def split_stanzas(poems):
@@ -22,4 +20,6 @@ def word_diversity(poem):
     return len(unique_words)/len(poem)
 
 def get_length()
+=======
 
+>>>>>>> e02f6888489f884a48d9debe1819b77e76eec628
