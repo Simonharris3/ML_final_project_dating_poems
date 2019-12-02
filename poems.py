@@ -60,7 +60,7 @@ def pos_counts(poems):
     for poem in poems:
         tagged_poem = nltk.pos_tag(poem)
         pos_count = \
-            {'ADJ': 0, 'ADP': 0, 'ADV': 0, 'CONJ': 0, 'DET': 0, 'NOUN': 0, 'NUM': 0, 'PRT': 0, 'PRON': 0, 'VERB': 0}
+            {'ADJ': 0, 'ADP': 0, 'ADV': 0, 'CONJ': 0, 'DT': 0, 'NN': 0, 'NUM': 0, 'PRT': 0, 'PRON': 0, 'VBZ': 0}
 
         for word in tagged_poem:
             pos_count[word[1]] += 1
@@ -92,5 +92,9 @@ def main():
 
     avg_stnz_lens = avg_stanza_len(poem_stanzas)
     print(avg_stnz_lens)
+
+    nltk.download('averaged_perceptron_tagger')
+    parts_of_speech = pos_counts(poem_texts)
+    print(parts_of_speech)
 
 main()
