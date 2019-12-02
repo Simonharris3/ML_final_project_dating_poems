@@ -13,12 +13,13 @@ def read_from_csv(file):
 
     return poems, labels
 
+
 # Returns a list of all poems in the format of a list of stanzas
 # Pass in the list of poems
 def split_stanzas(poems):
     poem_stanzas = []
     for poem in poems:
-        poem_stanzas.append(re.split('\S   \S', poem))
+        poem_stanzas.append(re.split('\S {3}\S', poem))
     return poem_stanzas
 
 
@@ -30,8 +31,9 @@ def avg_stanza_len(poem_stanzas):
         num_stanzas = 0
         for stanza in poem:
             total_words += len(stanza)
-        avg_stnz_lens.append(total_words/len(poem))
+        avg_stnz_lens.append(total_words / len(poem))
     return avg_stnz_lens
+
 
 # Returns ratio of unique words to total words in poem
 def word_diversity(poem):
@@ -40,15 +42,19 @@ def word_diversity(poem):
     for word in poem:
         if word not in unique_words:
             unique_words.append(word)
-    return len(unique_words)/len(poem)
+    return len(unique_words) / len(poem)
+
 
 def pos_counts(poems):
     pos_counts = []
     for poem in poems:
         tagged_poem = nltk.pos_tag(poem)
         pos_count = \
-            {'ADJ': 0, 'ADP': 0, 'ADV': 0, 'CONJ': 0, 'DET': 0, 'NOUN': 0, 'NUM': 0, 'NUM': 0, 'PRON': 0, 'VERB': 0}
+            {'ADJ': 0, 'ADP': 0, 'ADV': 0, 'CONJ': 0, 'DET': 0, 'NOUN': 0, 'NUM': 0, 'PRT': 0, 'PRON': 0, 'VERB': 0}
 
-        
+        for word in tagged_poem:
+            pos_count[word[1]] += 1
+
         pos_counts.append(pos_count)
 
+    return pos_counts
