@@ -20,15 +20,16 @@ def get_poem_label_pairs(poems):
     for poem in poem_list:
         poem_label = poem.split(",")
         poems_labels_list.append(poem_label)
-    print(poems_labels_list)
+    #print(poems_labels_list)
     return poems_labels_list
+
 
 # Returns a list of all poems in the format of a list of stanzas
 # Pass in the list of poems
 def split_stanzas(poems):
     poem_stanzas = []
     for poem in poems:
-        poem_stanzas.append(re.split('\S {3}\S', poem))
+        poem_stanzas.append(re.split('[^\s]\s{3}[^\s]', poem))
     return poem_stanzas
 
 
@@ -73,7 +74,20 @@ def main():
     file = open("short_poems.csv", 'r')
     if file.mode == 'r':
         contents = file.read()
-    poems_labels = get_poem_label_pairs(contents)
+    poem_label_pair_list = get_poem_label_pairs(contents)
 
+    poem_texts = []
+    for poem in poem_label_pair_list:
+        poem_texts.append(poem[0])
+
+    poem_stanzas = split_stanzas(poem_texts)
+
+    # for poem1 in poem_stanzas:
+    #     for stanza in poem1:
+    #         print("stanza: " + stanza)
+    #     print("\nNEW POEM:")
+
+    avg_stnz_lens = avg_stanza_len(poem_stanzas)
+    print(avg_stnz_lens)
 
 main()
