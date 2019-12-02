@@ -45,3 +45,11 @@ def get_length():
 
 
 def pos_counts(poems):
+    pass
+
+
+
+def main():
+    pass
+
+main()
