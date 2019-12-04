@@ -13,6 +13,22 @@ import re
 #     return poems, labels
 
 
+def write_atts_to_csv(labels, unique_word_ratios, poem_lengths, avg_word_lens, parts_of_speech):
+    filename = 'poem_attributes.csv'
+    file = open(filename, 'w')
+
+    file.write("Century,Word Diversity,Number of Words,Average Word Length,Number of Adjectives,Number of Adpositions,"
+               "Number of Adverbs,Number of Conjunctions,Number of Determiners,Number of Nouns,Number of Numerals,"
+               "Number of Particles,Number of Pronouns,Number of Verbs\n")
+
+    for i in range(len(labels)):
+        file.write(str(labels[i]) + ',' + str(unique_word_ratios[i]) + ',' + str(poem_lengths[i]) + ',' +
+                   str(avg_word_lens[i]) + ',' + str(parts_of_speech[i]['ADJ']) + ',' + str(parts_of_speech[i]['ADP'])
+                   + ',' + str(parts_of_speech[i]['ADV']) + ',' + str(parts_of_speech[i]['CONJ']) + ',' +
+                   str(parts_of_speech[i]['DET']) + ',' + str(parts_of_speech[i]['NOUN']) + ',' +
+                   str(parts_of_speech[i]['NUM']) + ',' + str(parts_of_speech[i]['PRT']) + ',' +
+                   str(parts_of_speech[i]['PRON']) + ',' + str(parts_of_speech[i]['VERB']) + ',\n')
+
 def get_poem_label_pairs(poems):
     poem_list = poems.split("\n")
     poems_labels_list = []
@@ -59,21 +75,30 @@ def get_word_diversity(poems):
 
 # returns the counts of each part of speech in the poems, as determined by the nltk pos tagger
 def pos_counts(poems):
-    part_of_speech_counts = []
+    pos_proportion = []
+    c = 0
     for poem in poems:
-        tagged_poem = nltk.pos_tag(poem)
-        pos_count = \
-            {'ADJ': 0, 'ADP': 0, 'ADV': 0, 'CONJ': 0, 'DT': 0, 'NN': 0, 'NUM': 0, 'PRT': 0, 'PRON': 0, 'VBZ': 0}
+        tagged_poem = nltk.pos_tag(poem, tagset='universal')
+
+        if c == 359:
+            print("Tagged poem: " + str(tagged_poem))
+
+        pos_count = {'ADJ': 0, 'ADP': 0, 'ADV': 0, 'CONJ': 0, 'DET': 0,
+                     'NOUN': 0, 'NUM': 0, 'PRT': 0, 'PRON': 0, 'VERB': 0, 'X': 0, '.': 0}
 
         for word in tagged_poem:
-            pos_count[word[1]] += 1
+            nltk_tag = word[1]
+            # pos = condense_pos(nltk_tag)
+            pos_count[nltk_tag] += 1
 
         for pos in pos_count:
             pos_count[pos] /= len(poem)
 
-        part_of_speech_counts.append(pos_count)
+        pos_proportion.append(pos_count)
 
-    return pos_counts
+        c += 1
+
+    return pos_proportion
 
 
 def get_num_stanzas(poem_stanzas):
@@ -91,14 +116,13 @@ def get_poem_lens(poems):
 
 
 def get_avg_word_lens(poems):
-    poem_words = []
+    # poem_words = []
     avg_word_lens = []
     for poem in poems:
-        poem_words = re.split("\s",poem)
         total_letters = 0
-        for word in poem_words:
+        for word in poem:
             total_letters += len(word)
-        avg_word_lens.append(total_letters/len(poem_words))
+        avg_word_lens.append(total_letters/len(poem))
     return avg_word_lens
 
 
@@ -108,30 +132,42 @@ def main():
         contents = file.read()
     poem_label_pair_list = get_poem_label_pairs(contents)
 
+    labels = []
     poem_texts = []
     for poem in poem_label_pair_list:
         poem_texts.append(poem[0])
+        labels.append(poem[1])
 
-    poem_stanzas = split_stanzas(poem_texts)
+    poem_words = []
+
+    for poem in poem_texts:
+        word_list = re.split("\s+", poem)
+        last_item = word_list[len(word_list) - 1]
+        if len(last_item) == 0:
+            word_list.remove(last_item)
+        poem_words.append(word_list)
+
+    # poem_stanzas = split_stanzas(poem_texts)
 
     # for poem1 in poem_stanzas:
     #     for stanza in poem1:
     #         print("stanza: " + stanza)
     #     print("\nNEW POEM:")
 
-    avg_stnz_lens = avg_stanza_len(poem_stanzas)
-    print("Avg Stanza Len: " + str(avg_stnz_lens))
-    num_stanzas = get_num_stanzas(poem_stanzas)
-    print("Num Stanzas: " + str(num_stanzas))
-    unique_word_ratios = get_word_diversity(poem_texts)
+    # avg_stnz_lens = avg_stanza_len(poem_stanzas)
+    # print("Avg Stanza Len: " + str(avg_stnz_lens))
+    # num_stanzas = get_num_stanzas(poem_stanzas)
+    # print("Num Stanzas: " + str(num_stanzas))
+    unique_word_ratios = get_word_diversity(poem_words)
     print("Word Diversity: " + str(unique_word_ratios))
-    print("Poem word counts: " + str(get_poem_lens(poem_texts)))
-    print("Average word lengths: " + str(get_avg_word_lens(poem_texts)))
+    poem_lengths = get_poem_lens(poem_words)
+    print("Poem word counts: " + str(poem_lengths))
+    avg_word_lens = get_avg_word_lens(poem_words)
+    print("Average word lengths: " + str(avg_word_lens))
     #print("Pos counts: " + str(pos_counts(poem_texts)))
+    parts_of_speech = pos_counts(poem_words)
+    print("Parts of speech: " + str(parts_of_speech[359]))
 
-
-    nltk.download('averaged_perceptron_tagger')
-    parts_of_speech = pos_counts(poem_texts)
-    print(parts_of_speech)
+    write_atts_to_csv(labels, unique_word_ratios, poem_lengths, avg_word_lens, parts_of_speech)
 
 main()
