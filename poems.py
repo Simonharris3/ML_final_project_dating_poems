@@ -32,9 +32,12 @@ def write_atts_to_csv(labels, unique_word_ratios, poem_lengths, avg_word_lens, p
 def get_poem_label_pairs(poems):
     poem_list = poems.split("\n")
     poems_labels_list = []
+    row = 0
     for poem in poem_list:
-        poem_label = poem.split(",")
-        poems_labels_list.append(poem_label)
+        if row != 0:
+            poem_label_pair = poem.split(",")
+            poems_labels_list.append(poem_label_pair)
+        row += 1
     # print(poems_labels_list)
     return poems_labels_list
 
@@ -78,7 +81,10 @@ def pos_counts(poems):
     pos_proportion = []
     c = 0
     for poem in poems:
-        tagged_poem = nltk.pos_tag(poem, tagset='universal')
+        try:
+            tagged_poem = nltk.pos_tag(poem, tagset='universal')
+        except IndexError:
+            print("Problem: " + str(poem))
 
         if c == 359:
             print("Tagged poem: " + str(tagged_poem))
@@ -127,7 +133,7 @@ def get_avg_word_lens(poems):
 
 
 def main():
-    file = open("short_poems.csv", 'r')
+    file = open("poems.csv", 'r')
     if file.mode == 'r':
         contents = file.read()
     poem_label_pair_list = get_poem_label_pairs(contents)
@@ -142,9 +148,9 @@ def main():
 
     for poem in poem_texts:
         word_list = re.split("\s+", poem)
-        last_item = word_list[len(word_list) - 1]
-        if len(last_item) == 0:
-            word_list.remove(last_item)
+        for word in word_list:
+            if len(word) == 0:
+                word_list.remove(word)
         poem_words.append(word_list)
 
     # poem_stanzas = split_stanzas(poem_texts)
