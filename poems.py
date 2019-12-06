@@ -1,6 +1,7 @@
 import nltk
 import csv
 import re
+import pandas
 
 # def read_from_csv(file):
 #     reader = csv.reader(file, delimiter=",")
@@ -21,13 +22,23 @@ def write_atts_to_csv(labels, unique_word_ratios, poem_lengths, avg_word_lens, p
                "Number of Adverbs,Number of Conjunctions,Number of Determiners,Number of Nouns,Number of Numerals,"
                "Number of Particles,Number of Pronouns,Number of Verbs\n")
 
+    # data = []
+
     for i in range(len(labels)):
         file.write(str(labels[i]) + ',' + str(unique_word_ratios[i]) + ',' + str(poem_lengths[i]) + ',' +
                    str(avg_word_lens[i]) + ',' + str(parts_of_speech[i]['ADJ']) + ',' + str(parts_of_speech[i]['ADP'])
                    + ',' + str(parts_of_speech[i]['ADV']) + ',' + str(parts_of_speech[i]['CONJ']) + ',' +
                    str(parts_of_speech[i]['DET']) + ',' + str(parts_of_speech[i]['NOUN']) + ',' +
                    str(parts_of_speech[i]['NUM']) + ',' + str(parts_of_speech[i]['PRT']) + ',' +
-                   str(parts_of_speech[i]['PRON']) + ',' + str(parts_of_speech[i]['VERB']) + ',\n')
+                   str(parts_of_speech[i]['PRON']) + ',' + str(parts_of_speech[i]['VERB']) + '\n')
+
+        # data.append([labels[i], unique_word_ratios[i], poem_lengths[i], avg_word_lens[i], parts_of_speech[i]['ADJ'],
+        #             parts_of_speech[i]['ADP'], parts_of_speech[i]['ADV'], parts_of_speech[i]['CONJ'],
+        #             parts_of_speech[i]['DET'], parts_of_speech[i]['NOUN'], parts_of_speech[i]['NUM'],
+        #             parts_of_speech[i]['PRT'], parts_of_speech[i]['PRON'], parts_of_speech[i]['VERB']])
+
+    # df = pandas.DataFrame(data)
+    # print(df.isnull().values.any())
 
 def get_poem_label_pairs(poems):
     poem_list = poems.split("\n")
