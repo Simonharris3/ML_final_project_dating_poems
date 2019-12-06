@@ -2,6 +2,7 @@ import nltk
 import csv
 import re
 import pandas
+from textblob import TextBlob
 
 # def read_from_csv(file):
 #     reader = csv.reader(file, delimiter=",")
@@ -14,19 +15,19 @@ import pandas
 #     return poems, labels
 
 
-def write_atts_to_csv(labels, unique_word_ratios, poem_lengths, avg_word_lens, parts_of_speech):
+def write_atts_to_csv(labels, sentiments, unique_word_ratios, poem_lengths, avg_word_lens, parts_of_speech):
     filename = 'poem_attributes.csv'
     file = open(filename, 'w')
 
-    file.write("Century,Word Diversity,Number of Words,Average Word Length,Number of Adjectives,Number of Adpositions,"
+    file.write("Century,Word Diversity,Sentiments,Number of Words,Average Word Length,Number of Adjectives,Number of Adpositions,"
                "Number of Adverbs,Number of Conjunctions,Number of Determiners,Number of Nouns,Number of Numerals,"
                "Number of Particles,Number of Pronouns,Number of Verbs\n")
 
     # data = []
 
     for i in range(len(labels)):
-        file.write(str(labels[i]) + ',' + str(unique_word_ratios[i]) + ',' + str(poem_lengths[i]) + ',' +
-                   str(avg_word_lens[i]) + ',' + str(parts_of_speech[i]['ADJ']) + ',' + str(parts_of_speech[i]['ADP'])
+        file.write(str(labels[i]) + ',' + str(sentiments[i]) + ',' + str(unique_word_ratios[i]) + ',' + str(poem_lengths[i])
+                   + ',' + str(avg_word_lens[i]) + ',' + str(parts_of_speech[i]['ADJ']) + ',' + str(parts_of_speech[i]['ADP'])
                    + ',' + str(parts_of_speech[i]['ADV']) + ',' + str(parts_of_speech[i]['CONJ']) + ',' +
                    str(parts_of_speech[i]['DET']) + ',' + str(parts_of_speech[i]['NOUN']) + ',' +
                    str(parts_of_speech[i]['NUM']) + ',' + str(parts_of_speech[i]['PRT']) + ',' +
@@ -118,11 +119,11 @@ def pos_counts(poems):
     return pos_proportion
 
 
-def get_num_stanzas(poem_stanzas):
-    num_stanzas = []
-    for poem in poem_stanzas:
-        num_stanzas.append(len(poem))
-    return num_stanzas
+# def get_num_stanzas(poem_stanzas):
+#     num_stanzas = []
+#     for poem in poem_stanzas:
+#         num_stanzas.append(len(poem))
+#     return num_stanzas
 
 
 def get_poem_lens(poems):
@@ -142,6 +143,13 @@ def get_avg_word_lens(poems):
         avg_word_lens.append(total_letters/len(poem))
     return avg_word_lens
 
+def analyze_sentiment(poems):
+    sentiments = []
+    for poem in poems:
+        poem_blob = TextBlob(poem)
+        sentiments.append(poem_blob.sentiment.polarity)
+
+    return sentiments
 
 def main():
     file = open("poems.csv", 'r')
@@ -175,6 +183,8 @@ def main():
     # print("Avg Stanza Len: " + str(avg_stnz_lens))
     # num_stanzas = get_num_stanzas(poem_stanzas)
     # print("Num Stanzas: " + str(num_stanzas))
+    sentiments = analyze_sentiment(poem_texts)
+    print("Sentiments: " + str(sentiments))
     unique_word_ratios = get_word_diversity(poem_words)
     print("Word Diversity: " + str(unique_word_ratios))
     poem_lengths = get_poem_lens(poem_words)
@@ -185,6 +195,7 @@ def main():
     parts_of_speech = pos_counts(poem_words)
     print("Parts of speech: " + str(parts_of_speech[359]))
 
-    write_atts_to_csv(labels, unique_word_ratios, poem_lengths, avg_word_lens, parts_of_speech)
+    write_atts_to_csv(labels, sentiments, unique_word_ratios, poem_lengths, avg_word_lens, parts_of_speech)
+
 
 main()
