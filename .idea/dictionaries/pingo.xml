@@ -4,8 +4,10 @@
       <w>adpositions</w>
       <w>atts</w>
       <w>filepath</w>
+      <w>nltk</w>
       <w>preprocessing</w>
       <w>scaler</w>
+      <w>stnz</w>
     </words>
   </dictionary>
 </component>
